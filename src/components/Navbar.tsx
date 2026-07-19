@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
 
         {/* 데스크탑 메뉴 */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-6">
           <Link
             href="/"
             className="text-sm font-semibold text-stone-600 hover:text-rose-500 transition-colors"
@@ -33,19 +33,11 @@ export default function Navbar() {
           >
             소개
           </Link>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-semibold text-stone-600 hover:text-rose-500 transition-colors"
-          >
-            GitHub
-          </a>
           <Link
-            href="/about"
+            href="/write"
             className="px-4 py-2 rounded-full bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition-colors"
           >
-            연락하기
+            ✏️ 글쓰기
           </Link>
         </nav>
 
@@ -78,14 +70,13 @@ export default function Navbar() {
           >
             소개
           </Link>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-semibold text-stone-600"
+          <Link
+            href="/write"
+            className="text-sm font-semibold text-rose-500"
+            onClick={() => setMenuOpen(false)}
           >
-            GitHub
-          </a>
+            ✏️ 글쓰기
+          </Link>
         </div>
       )}
     </header>

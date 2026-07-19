@@ -1,0 +1,46 @@
+[
+  {
+    "id": "47f13159-bdaf-4c52-8fe1-61f00b50a79c",
+    "slug": "1784440637229-47f131",
+    "title": "sss",
+    "excerpt": "asdasd...",
+    "content": "asdasd",
+    "category": "공부",
+    "emoji": "📝",
+    "date": "2026년 7월 19일",
+    "createdAt": "2026-07-19T05:57:17.229Z"
+  },
+  {
+    "id": "1",
+    "slug": "kimchi-jjigae-recipe",
+    "title": "김치찌개 황금 레시피",
+    "excerpt": "집에서 식당 맛 그대로! 육수부터 국물 비율까지 실패를 거듭하며 완성한 레시피예요.",
+    "content": "# 김치찌개 황금 레시피\n\n## 재료 (2인분)\n\n- 묵은지 300g\n- 돼지고기 목살 200g\n- 두부 반모\n- 대파 1대\n- 고추장 1큰술\n- 참기름 약간\n\n## 만드는 법\n\n1. 냄비에 참기름을 두르고 돼지고기를 볶아요.\n2. 김치를 넣고 같이 볶아주세요.\n3. 물 500ml를 넣고 끓여요.\n4. 두부와 대파를 넣고 5분 더 끓이면 완성!\n\n## 팁\n\n묵은지를 쓸수록 깊은 맛이 나요. 신 김치가 없으면 일반 김치에 식초 한 방울 더하면 비슷하게 돼요.",
+    "category": "요리",
+    "emoji": "🍲",
+    "date": "2025년 7월 15일",
+    "createdAt": "2025-07-15T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "slug": "next-js-app-router-guide",
+    "title": "Next.js App Router 핵심 정리",
+    "excerpt": "Server Component와 Client Component, 언제 어떻게 써야 하는지 헷갈렸던 부분만 모아서 정리했어요.",
+    "content": "# Next.js App Router 핵심 정리\n\n## Server Component vs Client Component\n\n기본적으로 app 폴더 안 컴포넌트는 **Server Component**예요.\n\n## 언제 Client Component를 쓸까?\n\n- useState, useEffect를 쓸 때\n- onClick 같은 이벤트를 다룰 때\n- 브라우저 전용 API를 쓸 때\n\n반대로 데이터 페칭, DB 접근은 Server Component에서 처리하는 게 좋아요.",
+    "category": "공부",
+    "emoji": "⚡",
+    "date": "2025년 7월 10일",
+    "createdAt": "2025-07-10T09:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "slug": "useful-things-lately",
+    "title": "요즘 자주 쓰는 것들 모음",
+    "excerpt": "딱히 카테고리가 없는 것들인데 그냥 기록해두고 싶어서요. 앱, 문구류, 소소한 팁들이에요.",
+    "content": "# 요즘 자주 쓰는 것들\n\n## 앱\n\n- Notion: 할일 관리\n- Obsidian: 공부 노트 정리\n\n## 문구류\n\n- 제트스트림 볼펜: 부드럽고 번짐이 없어요\n- 캠퍼스 노트: 가성비 최고\n\n## 기타 팁\n\n아이폰 화면 시간 제한 설정해두면 유튜브 시간이 줄어들어요. 추천!",
+    "category": "잡동사니",
+    "emoji": "🗂️",
+    "date": "2025년 7월 5일",
+    "createdAt": "2025-07-05T08:00:00.000Z"
+  }
+]
