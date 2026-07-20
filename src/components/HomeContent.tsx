@@ -1,16 +1,19 @@
 "use client";
 
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import PostCard from '@/components/PostCard';
-import { CATEGORIES, categoryJa } from '@/lib/categories';
+import { CATEGORIES, categoryJa, categoryJaToKorean } from '@/lib/categories';
 import { Post } from '@/types/post';
 
 export default function HomeContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const category = searchParams.get('category') || '전체';
+  // URL에는 일본어 값이 들어옴 (ex: ?category=料理)
+  const categoryParam = searchParams.get('category') || '';
+  // API 쿼리는 한국어 내부값 사용
+  const category = categoryJaToKorean[categoryParam] || '전체';
   const q = searchParams.get('q') || '';
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -47,26 +50,22 @@ export default function HomeContent() {
     }
   }, [showPinModal]);
 
-  const navigate = (cat: string, newQ?: string) => {
-    const params = new URLSearchParams();
-    if (cat !== '전체') params.set('category', cat);
-    const query = newQ !== undefined ? newQ : q;
-    if (query) params.set('q', query);
-    const qs = params.toString();
-    router.push(qs ? `/?${qs}` : '/');
+  // URL에 일본어 파라미터를 사용하는 href 생성
+  const getCategoryHref = (cat: string) => {
+    if (cat === '전체') return '/';
+    return `/?category=${encodeURIComponent(categoryJa[cat])}`;
   };
 
-  const handleCategoryClick = (cat: string) => {
-    if (cat === '비밀폴더') {
-      const unlocked = sessionStorage.getItem('secret-unlocked') === 'true';
-      if (!unlocked) {
-        setShowPinModal(true);
-        setPinInput('');
-        setPinError(false);
-        return;
-      }
+  // 비밀폴더는 PIN 체크가 필요해서 버튼으로 처리
+  const handleSecretClick = () => {
+    const unlocked = sessionStorage.getItem('secret-unlocked') === 'true';
+    if (!unlocked) {
+      setShowPinModal(true);
+      setPinInput('');
+      setPinError(false);
+    } else {
+      window.location.href = getCategoryHref('비밀폴더');
     }
-    navigate(cat);
   };
 
   const handlePinSubmit = async (e: React.FormEvent) => {
@@ -79,7 +78,7 @@ export default function HomeContent() {
     if (res.ok) {
       sessionStorage.setItem('secret-unlocked', 'true');
       setShowPinModal(false);
-      navigate('비밀폴더');
+      window.location.href = getCategoryHref('비밀폴더');
     } else {
       setPinError(true);
       setPinInput('');
@@ -88,7 +87,18 @@ export default function HomeContent() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(category, searchInput);
+    const params = new URLSearchParams();
+    if (category !== '전체') params.set('category', categoryJa[category]);
+    if (searchInput) params.set('q', searchInput);
+    const qs = params.toString();
+    window.location.href = qs ? `/?${qs}` : '/';
+  };
+
+  const handleResetSearch = () => {
+    setSearchInput('');
+    const params = new URLSearchParams();
+    if (category !== '전체') params.set('category', categoryJa[category]);
+    window.location.href = params.toString() ? `/?${params}` : '/';
   };
 
   return (
@@ -129,10 +139,7 @@ export default function HomeContent() {
         {q && (
           <button
             type="button"
-            onClick={() => {
-              setSearchInput('');
-              navigate(category, '');
-            }}
+            onClick={handleResetSearch}
             className="px-4 py-2.5 rounded-full border border-stone-200 text-stone-500 text-sm hover:border-stone-300 transition-colors"
           >
             リセット
@@ -143,19 +150,34 @@ export default function HomeContent() {
       {/* カテゴリフィルター */}
       <section className="mb-8">
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
-                category === cat
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-200'
-                  : 'bg-white text-stone-600 border border-stone-200 hover:border-rose-300 hover:text-rose-500'
-              }`}
-            >
-              {cat === '비밀폴더' ? `🔒 ${categoryJa['비밀폴더']}` : categoryJa[cat]}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isActive = category === cat;
+            const baseClass = `px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200`;
+            const activeClass = 'bg-rose-500 text-white shadow-md shadow-rose-200';
+            const inactiveClass = 'bg-white text-stone-600 border border-stone-200 hover:border-rose-300 hover:text-rose-500';
+
+            if (cat === '비밀폴더') {
+              return (
+                <button
+                  key={cat}
+                  onClick={handleSecretClick}
+                  className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
+                >
+                  🔒 {categoryJa['비밀폴더']}
+                </button>
+              );
+            }
+
+            return (
+              <Link
+                key={cat}
+                href={getCategoryHref(cat)}
+                className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
+              >
+                {categoryJa[cat]}
+              </Link>
+            );
+          })}
         </div>
       </section>
 

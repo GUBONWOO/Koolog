@@ -16,3 +16,8 @@ export const categoryJa: Record<string, string> = {
   잡동사니: '雑多',
   비밀폴더: '秘密フォルダ',
 };
+
+// URL 파라미터(일본어) → 내부 한국어 값 (API 쿼리용)
+export const categoryJaToKorean: Record<string, string> = Object.fromEntries(
+  Object.entries(categoryJa).map(([ko, ja]) => [ja, ko])
+);
