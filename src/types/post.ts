@@ -10,4 +10,5 @@ export interface Post {
   emoji: string;
   date: string;
   createdAt: string;
+  updatedAt: string;
 }

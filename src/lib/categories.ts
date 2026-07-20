@@ -8,3 +8,11 @@ export const categoryStyle: Record<Category, { color: string; cover: string }> =
   잡동사니: { color: 'bg-stone-100 text-stone-600', cover: 'from-stone-200 to-gray-300' },
   비밀폴더: { color: 'bg-purple-100 text-purple-600', cover: 'from-purple-200 to-violet-300' },
 };
+
+export const categoryJa: Record<string, string> = {
+  전체: 'すべて',
+  요리: '料理',
+  공부: '勉強',
+  잡동사니: '雑多',
+  비밀폴더: '秘密フォルダ',
+};

@@ -20,6 +20,7 @@ function rowToPost(row: Record<string, unknown>): Post {
     emoji: row.emoji as string,
     date: row.date as string,
     createdAt: (row.created_at as Date).toISOString(),
+    updatedAt: (row.updated_at as Date).toISOString(),
   };
 }
 
@@ -84,4 +85,34 @@ export async function createPost(data: {
     [slug, data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', date]
   );
   return rowToPost(result.rows[0]);
+}
+
+export async function updatePost(
+  slug: string,
+  data: { title: string; category: Category; content: string; emoji: string }
+): Promise<Post | undefined> {
+  await ensureDB();
+
+  const excerpt =
+    data.content
+      .replace(/#{1,6}\s/g, '')
+      .replace(/[*`\-]/g, '')
+      .replace(/\n+/g, ' ')
+      .trim()
+      .slice(0, 120) + '...';
+
+  const result = await pool.query(
+    `UPDATE posts
+     SET title = $1, excerpt = $2, content = $3, category = $4, emoji = $5
+     WHERE slug = $6
+     RETURNING *`,
+    [data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', slug]
+  );
+  return result.rows[0] ? rowToPost(result.rows[0]) : undefined;
+}
+
+export async function deletePost(slug: string): Promise<boolean> {
+  await ensureDB();
+  const result = await pool.query('DELETE FROM posts WHERE slug = $1', [slug]);
+  return (result.rowCount ?? 0) > 0;
 }

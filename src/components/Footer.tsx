@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
 
           <p className="text-sm text-stone-400 text-center">
-            개발하면서 배운 것들을 기록하는 공간이에요.
+            開発しながら学んだことを記録する空間です。
           </p>
 
           <p className="text-sm text-stone-400">

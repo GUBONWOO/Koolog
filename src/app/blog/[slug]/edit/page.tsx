@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Category } from '@/types/post';
 import { categoryStyle, categoryJa } from '@/lib/categories';
 
@@ -13,32 +13,67 @@ const EMOJI_OPTIONS = [
   '🔒', '🌸', '⚡', '🎨', '🚀', '😊',
 ];
 
-export default function WritePage() {
+export default function EditPage() {
   const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
+
+  const [pin, setPin] = useState('');
+  const [pinVerified, setPinVerified] = useState(false);
+  const [pinError, setPinError] = useState('');
+
   const [form, setForm] = useState({
     title: '',
     category: '공부' as Category,
     emoji: '📝',
     content: '',
   });
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    fetch(`/api/posts/${slug}`)
+      .then((r) => r.json())
+      .then((post) => {
+        setForm({
+          title: post.title,
+          category: post.category,
+          emoji: post.emoji,
+          content: post.content,
+        });
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('記事を読み込めませんでした。');
+        setLoading(false);
+      });
+  }, [slug]);
+
+  const verifyPin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = await fetch('/api/secret-verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setPinVerified(true);
+      setPinError('');
+    } else {
+      setPinError('パスワードが違います。');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.title.trim()) {
-      setError('タイトルを入力してください。');
-      return;
-    }
-    if (!form.content.trim()) {
-      setError('内容を入力してください。');
-      return;
-    }
+    if (!form.title.trim()) { setError('タイトルを入力してください。'); return; }
+    if (!form.content.trim()) { setError('内容を入力してください。'); return; }
     setSubmitting(true);
     setError('');
     try {
-      const res = await fetch('/api/posts', {
-        method: 'POST',
+      const res = await fetch(`/api/posts/${slug}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
@@ -56,6 +91,37 @@ export default function WritePage() {
     }
   };
 
+  if (!pinVerified) {
+    return (
+      <div className="max-w-sm mx-auto px-6 py-24 flex flex-col items-center gap-6">
+        <div className="text-5xl">🔑</div>
+        <h2 className="text-xl font-bold text-stone-800">パスワード確認</h2>
+        <form onSubmit={verifyPin} className="w-full flex flex-col gap-3">
+          <input
+            type="password"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            placeholder="パスワードを入力してください"
+            className="w-full px-5 py-3 rounded-2xl border border-stone-200 text-stone-800 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all"
+          />
+          {pinError && (
+            <p className="text-sm text-rose-500">{pinError}</p>
+          )}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-full bg-rose-500 text-white font-semibold text-sm hover:bg-rose-600 transition-colors"
+          >
+            確認
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return <div className="flex justify-center py-24 text-stone-400">読み込み中...</div>;
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
       <div className="flex items-center gap-3 mb-8">
@@ -69,16 +135,13 @@ export default function WritePage() {
           className="text-2xl font-bold text-stone-800"
           style={{ fontFamily: 'var(--font-playfair)' }}
         >
-          新しい記事を書く
+          記事を編集
         </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-7">
-        {/* カテゴリ */}
         <div>
-          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">
-            カテゴリ
-          </label>
+          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">カテゴリ</label>
           <div className="flex flex-wrap gap-2">
             {WRITE_CATEGORIES.map((cat) => (
               <button
@@ -97,11 +160,8 @@ export default function WritePage() {
           </div>
         </div>
 
-        {/* 絵文字 */}
         <div>
-          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">
-            絵文字
-          </label>
+          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">絵文字</label>
           <div className="flex flex-wrap gap-2">
             {EMOJI_OPTIONS.map((emoji) => (
               <button
@@ -120,21 +180,16 @@ export default function WritePage() {
           </div>
         </div>
 
-        {/* タイトル */}
         <div>
-          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">
-            タイトル
-          </label>
+          <label className="text-sm font-semibold text-stone-600 mb-2.5 block">タイトル</label>
           <input
             type="text"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            placeholder="タイトルを入力してください"
             className="w-full px-5 py-3 rounded-2xl border border-stone-200 text-stone-800 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all"
           />
         </div>
 
-        {/* プレビューバナー */}
         <div
           className={`rounded-2xl bg-gradient-to-br ${categoryStyle[form.category].cover} p-5 flex items-center gap-4`}
         >
@@ -147,25 +202,20 @@ export default function WritePage() {
           </div>
         </div>
 
-        {/* 内容 */}
         <div>
           <label className="text-sm font-semibold text-stone-600 mb-2.5 block">
-            内容{' '}
-            <span className="font-normal text-stone-400">(Markdown対応)</span>
+            内容 <span className="font-normal text-stone-400">(Markdown対応)</span>
           </label>
           <textarea
             value={form.content}
             onChange={(e) => setForm({ ...form, content: e.target.value })}
-            placeholder={'# タイトル\n\nMarkdownで内容を書いてください...\n\n## 小見出し\n\n- 項目1\n- 項目2'}
             rows={18}
             className="w-full px-5 py-4 rounded-2xl border border-stone-200 text-stone-800 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 resize-none font-mono leading-relaxed transition-all"
           />
         </div>
 
         {error && (
-          <p className="text-sm text-rose-500 bg-rose-50 px-4 py-3 rounded-xl">
-            {error}
-          </p>
+          <p className="text-sm text-rose-500 bg-rose-50 px-4 py-3 rounded-xl">{error}</p>
         )}
 
         <div className="flex gap-3 pb-6">
@@ -181,7 +231,7 @@ export default function WritePage() {
             disabled={submitting}
             className="flex-1 py-3 rounded-full bg-rose-500 text-white font-semibold text-sm hover:bg-rose-600 disabled:opacity-50 transition-colors"
           >
-            {submitting ? '保存中...' : '投稿する 🌸'}
+            {submitting ? '保存中...' : '編集完了 ✏️'}
           </button>
         </div>
       </form>

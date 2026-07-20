@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import PostCard from '@/components/PostCard';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, categoryJa } from '@/lib/categories';
 import { Post } from '@/types/post';
 
 export default function HomeContent() {
@@ -93,22 +93,22 @@ export default function HomeContent() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
-      {/* 히어로 */}
+      {/* ヒーロー */}
       <section className="text-center mb-12">
         <h1
           className="text-4xl md:text-5xl font-bold text-stone-800 mb-4 leading-tight"
           style={{ fontFamily: 'var(--font-playfair)' }}
         >
-          기록하고
+          記録して
           <br />
-          <span className="text-rose-500">나누는 공간이에요</span>
+          <span className="text-rose-500">分かち合う空間</span>
         </h1>
         <p className="text-stone-500 text-base md:text-lg max-w-xl mx-auto leading-relaxed">
-          요리, 공부, 소소한 일상까지 솔직하게 써내려가요.
+          料理、勉強、日常のあれこれを正直に綴ります。
         </p>
       </section>
 
-      {/* 검색 */}
+      {/* 検索 */}
       <form
         onSubmit={handleSearch}
         className="mb-8 flex gap-2 max-w-md mx-auto md:mx-0"
@@ -117,14 +117,14 @@ export default function HomeContent() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="검색어를 입력해 주세요"
+          placeholder="キーワードを入力してください"
           className="flex-1 px-5 py-2.5 rounded-full border border-stone-200 text-sm text-stone-800 outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 bg-white"
         />
         <button
           type="submit"
           className="px-5 py-2.5 rounded-full bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition-colors"
         >
-          검색
+          検索
         </button>
         {q && (
           <button
@@ -135,12 +135,12 @@ export default function HomeContent() {
             }}
             className="px-4 py-2.5 rounded-full border border-stone-200 text-stone-500 text-sm hover:border-stone-300 transition-colors"
           >
-            초기화
+            リセット
           </button>
         )}
       </form>
 
-      {/* 카테고리 필터 */}
+      {/* カテゴリフィルター */}
       <section className="mb-8">
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
@@ -153,20 +153,20 @@ export default function HomeContent() {
                   : 'bg-white text-stone-600 border border-stone-200 hover:border-rose-300 hover:text-rose-500'
               }`}
             >
-              {cat === '비밀폴더' ? '🔒 비밀폴더' : cat}
+              {cat === '비밀폴더' ? `🔒 ${categoryJa['비밀폴더']}` : categoryJa[cat]}
             </button>
           ))}
         </div>
       </section>
 
-      {/* 검색 결과 표시 */}
+      {/* 検索結果表示 */}
       {q && (
         <p className="text-sm text-stone-400 mb-4">
-          &quot;{q}&quot; 검색 결과 {posts.length}개
+          &quot;{q}&quot; の検索結果 {posts.length}件
         </p>
       )}
 
-      {/* 포스트 그리드 */}
+      {/* 投稿グリッド */}
       <section>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -187,13 +187,13 @@ export default function HomeContent() {
           <div className="text-center py-20 text-stone-400">
             <span className="text-4xl block mb-4">📭</span>
             <p className="text-lg font-semibold">
-              {q ? `'${q}' 검색 결과가 없어요` : '아직 글이 없어요'}
+              {q ? `「${q}」の検索結果はありません` : 'まだ記事がありません'}
             </p>
           </div>
         )}
       </section>
 
-      {/* 비밀폴더 PIN 모달 */}
+      {/* 秘密フォルダ PINモーダル */}
       {showPinModal && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
@@ -205,8 +205,8 @@ export default function HomeContent() {
           >
             <div className="text-center mb-6">
               <span className="text-5xl block mb-3">🔒</span>
-              <h2 className="text-lg font-bold text-stone-800">비밀폴더</h2>
-              <p className="text-sm text-stone-400 mt-1">PIN을 입력해 주세요</p>
+              <h2 className="text-lg font-bold text-stone-800">秘密フォルダ</h2>
+              <p className="text-sm text-stone-400 mt-1">PINを入力してください</p>
             </div>
             <form onSubmit={handlePinSubmit} className="flex flex-col gap-3">
               <input
@@ -226,20 +226,20 @@ export default function HomeContent() {
                 } focus:ring-2`}
               />
               {pinError && (
-                <p className="text-xs text-rose-500 text-center">PIN이 틀렸어요</p>
+                <p className="text-xs text-rose-500 text-center">PINが違います</p>
               )}
               <button
                 type="submit"
                 className="w-full py-3 rounded-full bg-rose-500 text-white font-semibold text-sm hover:bg-rose-600 transition-colors"
               >
-                확인
+                確認
               </button>
               <button
                 type="button"
                 onClick={() => setShowPinModal(false)}
                 className="w-full py-2.5 rounded-full border border-stone-200 text-stone-500 text-sm hover:border-stone-300 transition-colors"
               >
-                취소
+                キャンセル
               </button>
             </form>
           </div>

@@ -12,20 +12,20 @@ const skills = [
 const timeline = [
   {
     year: "2024",
-    title: "koolog 시작",
-    desc: "배운 것들을 기록하고 나누기 위해 블로그를 만들었어요.",
+    title: "koolog スタート",
+    desc: "学んだことを記録・共有するためにブログを作りました。",
     emoji: "🌸",
   },
   {
     year: "2023",
-    title: "프리랜서 프론트엔드 개발",
-    desc: "다양한 프로젝트를 통해 실전 경험을 쌓았어요.",
+    title: "フリーランスフロントエンド開発",
+    desc: "様々なプロジェクトを通して実践経験を積みました。",
     emoji: "💻",
   },
   {
     year: "2022",
-    title: "개발 시작",
-    desc: "HTML/CSS로 시작해서 React에 빠져들었어요.",
+    title: "開発スタート",
+    desc: "HTML/CSSから始めて、Reactにはまりました。",
     emoji: "🚀",
   },
 ];
@@ -33,7 +33,7 @@ const timeline = [
 export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-14">
-      {/* 프로필 헤더 */}
+      {/* プロフィールヘッダー */}
       <section className="text-center mb-16">
         <div className="w-28 h-28 rounded-full bg-gradient-to-br from-rose-300 to-pink-400 flex items-center justify-center text-5xl mx-auto mb-6 shadow-lg shadow-rose-200">
           👩‍💻
@@ -42,11 +42,11 @@ export default function AboutPage() {
           className="text-3xl md:text-4xl font-bold text-stone-800 mb-3"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
-          안녕하세요, <span className="text-rose-500">gubonwoo</span>예요!
+          はじめまして、<span className="text-rose-500">gubonwoo</span>です！
         </h1>
         <p className="text-stone-500 text-base leading-relaxed max-w-lg mx-auto">
-          아름다운 인터페이스를 만드는 걸 좋아하는 프론트엔드 개발자예요.
-          배운 것을 정리하고 나누는 걸 즐겨요.
+          美しいインターフェースを作るのが好きなフロントエンドエンジニアです。
+          学んだことを整理して共有するのを楽しんでいます。
         </p>
 
         <div className="flex items-center justify-center gap-4 mt-6">
@@ -62,44 +62,41 @@ export default function AboutPage() {
             href="mailto:zcwxzsx@gmail.com"
             className="px-5 py-2.5 rounded-full border-2 border-rose-300 text-rose-500 text-sm font-semibold hover:bg-rose-50 transition-colors"
           >
-            이메일 보내기
+            メールを送る
           </a>
         </div>
       </section>
 
-      {/* 소개 */}
+      {/* ブログ紹介 */}
       <section className="mb-14">
         <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-3xl p-8">
           <h2
             className="text-xl font-bold text-stone-800 mb-4"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
-            이 블로그는요 🌸
+            このブログについて 🌸
           </h2>
           <div className="space-y-3 text-stone-600 leading-relaxed">
             <p>
-              개발하면서 마주치는 크고 작은 문제들, 새로 배운 개념들, 그리고
-              삽질의 흔적들을 솔직하게 기록해요.
+              開発中に出会う大小様々な問題、新しく学んだ概念、そして試行錯誤の記録を正直に残しています。
             </p>
             <p>
-              완벽한 글을 쓰려고 오래 기다리기보다는, 지금 알고 있는 것들을
-              빠르게 정리하는 편이에요.
+              完璧な記事を書こうと長く待つより、今知っていることを素早くまとめるスタイルです。
             </p>
             <p>
-              누군가에게 도움이 된다면 더할 나위 없이 좋고, 최소한 미래의
-              제가 고마워할 기록을 남기려 해요.
+              誰かの役に立てば嬉しいですし、少なくとも未来の自分が感謝してくれる記録を残したいと思っています。
             </p>
           </div>
         </div>
       </section>
 
-      {/* 기술 스택 */}
+      {/* 技術スタック */}
       <section className="mb-14">
         <h2
           className="text-xl font-bold text-stone-800 mb-5"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
-          주로 쓰는 기술 ⚡
+          よく使う技術 ⚡
         </h2>
         <div className="flex flex-wrap gap-3">
           {skills.map((skill) => (
@@ -113,13 +110,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 타임라인 */}
+      {/* タイムライン */}
       <section className="mb-14">
         <h2
           className="text-xl font-bold text-stone-800 mb-6"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
-          걸어온 길 📍
+          歩んできた道 📍
         </h2>
         <div className="space-y-4">
           {timeline.map((item) => (
@@ -157,16 +154,16 @@ export default function AboutPage() {
           className="text-2xl font-bold mb-3 relative z-10"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
-          같이 이야기해요
+          一緒に話しましょう
         </h2>
         <p className="text-violet-100 mb-6 relative z-10">
-          궁금한 게 있거나, 글에 대한 의견이 있으면 편하게 연락해 주세요!
+          気になることや記事への感想があれば、気軽に連絡してください！
         </p>
         <a
           href="mailto:zcwxzsx@gmail.com"
           className="inline-block px-8 py-3 bg-white text-violet-600 rounded-full font-bold text-sm hover:bg-violet-50 transition-colors relative z-10"
         >
-          이메일 보내기 ✉️
+          メールを送る ✉️
         </a>
       </section>
 
@@ -175,7 +172,7 @@ export default function AboutPage() {
           href="/"
           className="text-sm font-semibold text-stone-500 hover:text-rose-500 transition-colors"
         >
-          ← 블로그로 돌아가기
+          ← ブログに戻る
         </Link>
       </div>
     </div>

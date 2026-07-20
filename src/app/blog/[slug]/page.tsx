@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPostBySlug } from '@/lib/posts';
-import { categoryStyle } from '@/lib/categories';
+import { categoryStyle, categoryJa } from '@/lib/categories';
+import PostActions from './PostActions';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,13 +19,25 @@ export default async function BlogPostPage({
   const style = categoryStyle[post.category];
   const lines = post.content.trim().split('\n');
 
+  const createdAt = new Date(post.createdAt).toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const updatedAt = new Date(post.updatedAt).toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const isEdited = post.createdAt !== post.updatedAt;
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
       <Link
         href="/"
         className="inline-flex items-center gap-2 text-sm font-semibold text-stone-500 hover:text-rose-500 transition-colors mb-8"
       >
-        ← 목록으로
+        ← 一覧に戻る
       </Link>
 
       <div
@@ -35,13 +48,17 @@ export default async function BlogPostPage({
         <div className="absolute -top-6 -left-6 w-24 h-24 bg-white/20 rounded-full" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-5">
-        <span
-          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${style.color}`}
-        >
-          {post.category}
-        </span>
-        <span className="text-sm text-stone-400">{post.date}</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${style.color}`}>
+            {categoryJa[post.category] ?? post.category}
+          </span>
+          <span className="text-sm text-stone-400">投稿日 {createdAt}</span>
+          {isEdited && (
+            <span className="text-xs text-stone-400">更新日 {updatedAt}</span>
+          )}
+        </div>
+        <PostActions slug={slug} />
       </div>
 
       <h1
@@ -98,7 +115,7 @@ export default async function BlogPostPage({
           href="/"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-rose-500 text-white font-semibold text-sm hover:bg-rose-600 transition-colors"
         >
-          🌸 다른 글 보기
+          🌸 他の記事を見る
         </Link>
       </div>
     </div>

@@ -19,33 +19,33 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* 데스크탑 메뉴 */}
+        {/* デスクトップメニュー */}
         <nav className="hidden md:flex items-center gap-6">
           <Link
             href="/"
             className="text-sm font-semibold text-stone-600 hover:text-rose-500 transition-colors"
           >
-            홈
+            ホーム
           </Link>
           <Link
             href="/about"
             className="text-sm font-semibold text-stone-600 hover:text-rose-500 transition-colors"
           >
-            소개
+            紹介
           </Link>
           <Link
             href="/write"
             className="px-4 py-2 rounded-full bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition-colors"
           >
-            ✏️ 글쓰기
+            ✏️ 書く
           </Link>
         </nav>
 
-        {/* 모바일 햄버거 */}
+        {/* モバイルハンバーガー */}
         <button
           className="md:hidden p-2 text-stone-600"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="메뉴 열기"
+          aria-label="メニューを開く"
         >
           <div className="w-5 h-0.5 bg-current mb-1.5 transition-all" />
           <div className="w-5 h-0.5 bg-current mb-1.5 transition-all" />
@@ -53,7 +53,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* 모바일 드롭다운 */}
+      {/* モバイルドロップダウン */}
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-rose-100 px-6 py-4 flex flex-col gap-4">
           <Link
@@ -61,21 +61,21 @@ export default function Navbar() {
             className="text-sm font-semibold text-stone-600"
             onClick={() => setMenuOpen(false)}
           >
-            홈
+            ホーム
           </Link>
           <Link
             href="/about"
             className="text-sm font-semibold text-stone-600"
             onClick={() => setMenuOpen(false)}
           >
-            소개
+            紹介
           </Link>
           <Link
             href="/write"
             className="text-sm font-semibold text-rose-500"
             onClick={() => setMenuOpen(false)}
           >
-            ✏️ 글쓰기
+            ✏️ 書く
           </Link>
         </div>
       )}

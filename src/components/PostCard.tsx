@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Post } from '@/types/post';
-import { categoryStyle } from '@/lib/categories';
+import { categoryStyle, categoryJa } from '@/lib/categories';
 
 export default function PostCard({ post }: { post: Post }) {
   const style = categoryStyle[post.category];
@@ -20,7 +20,7 @@ export default function PostCard({ post }: { post: Post }) {
             <span
               className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${style.color}`}
             >
-              {post.category}
+              {categoryJa[post.category] ?? post.category}
             </span>
             <span className="text-xs text-stone-400">{post.date}</span>
           </div>
@@ -35,7 +35,7 @@ export default function PostCard({ post }: { post: Post }) {
           </p>
           <div className="mt-4 flex justify-end">
             <span className="text-xs font-semibold text-rose-400 group-hover:text-rose-600 transition-colors">
-              읽기 →
+              読む →
             </span>
           </div>
         </div>
