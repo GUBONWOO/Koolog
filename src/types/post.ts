@@ -11,4 +11,7 @@ export interface Post {
   date: string;
   createdAt: string;
   updatedAt: string;
+  coverColor?: string;
+  categoryColor?: string;
+  readTime?: string;
 }
