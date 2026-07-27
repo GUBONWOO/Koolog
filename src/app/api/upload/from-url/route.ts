@@ -26,6 +26,19 @@ function extFromUrl(urlStr: string): string | null {
   return e === 'jpeg' ? 'jpg' : e;
 }
 
+function detectImageExt(buf: Buffer): string | null {
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'jpg';
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return 'png';
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return 'gif';
+  if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+      buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) return 'webp';
+  if (buf[0] === 0x42 && buf[1] === 0x4d) return 'bmp';
+  if (buf[0] === 0x00 && buf[1] === 0x00 && buf[2] === 0x01 && buf[3] === 0x00) return 'ico';
+  // AVIF/HEIC: ftyp box
+  if (buf.length > 11 && buf.slice(4, 8).toString('ascii') === 'ftyp') return 'avif';
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   const { url } = (await req.json()) as { url: string };
 
@@ -69,15 +82,7 @@ export async function POST(req: NextRequest) {
 
   const contentType = res.headers.get('content-type')?.split(';')[0].trim().toLowerCase() || '';
   const isImageMime = contentType.startsWith('image/');
-  const isOctetStream = contentType === 'application/octet-stream' || contentType === '';
   const extFromUrlPath = extFromUrl(parsedUrl.pathname + parsedUrl.search);
-
-  if (!isImageMime && !(isOctetStream && extFromUrlPath)) {
-    return NextResponse.json(
-      { error: `이미지 파일이 아닙니다 (${contentType || '알 수 없음'}). 이미지 URL이 맞는지 확인해주세요.` },
-      { status: 400 }
-    );
-  }
 
   const buffer = Buffer.from(await res.arrayBuffer());
   if (buffer.length === 0) {
@@ -87,7 +92,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '파일 크기는 10MB 이하여야 합니다.' }, { status: 400 });
   }
 
-  const ext = (isImageMime ? MIME_TO_EXT[contentType] : null) ?? extFromUrlPath ?? 'jpg';
+  const magicExt = detectImageExt(buffer);
+
+  if (!isImageMime && !magicExt && !extFromUrlPath) {
+    return NextResponse.json(
+      { error: `이미지 파일이 아닙니다 (${contentType || '알 수 없음'}). 이미지 URL이 맞는지 확인해주세요.` },
+      { status: 400 }
+    );
+  }
+
+  const ext = magicExt ?? (isImageMime ? MIME_TO_EXT[contentType] : null) ?? extFromUrlPath ?? 'jpg';
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 
