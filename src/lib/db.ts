@@ -26,6 +26,7 @@ export async function initDB() {
   await pool.query(`CREATE INDEX IF NOT EXISTS idx_posts_category   ON posts(category);`);
   await pool.query(`CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at DESC);`);
   await pool.query(`ALTER TABLE posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();`);
+  await pool.query(`ALTER TABLE posts ADD COLUMN IF NOT EXISTS cover_image VARCHAR(500);`);
   await pool.query(`
     CREATE OR REPLACE FUNCTION update_updated_at()
     RETURNS TRIGGER AS $$

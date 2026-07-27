@@ -9,6 +9,8 @@ services:
     environment:
       NODE_ENV: production
       DB_HOST: postgres
+    volumes:
+      - uploads_data:/app/public/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,3 +35,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:

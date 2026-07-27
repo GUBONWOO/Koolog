@@ -8,6 +8,7 @@ export interface Post {
   content: string;
   category: Category;
   emoji: string;
+  coverImage?: string;
   date: string;
   createdAt: string;
   updatedAt: string;

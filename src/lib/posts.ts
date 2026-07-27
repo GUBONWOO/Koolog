@@ -9,19 +9,37 @@ async function ensureDB() {
   }
 }
 
+function firstImageInContent(content: string): string | undefined {
+  return content.match(/!\[[^\]]*\]\(([^)]+)\)/)?.[1];
+}
+
 function rowToPost(row: Record<string, unknown>): Post {
+  const content = row.content as string;
   return {
     id: row.id as string,
     slug: row.slug as string,
     title: row.title as string,
     excerpt: row.excerpt as string,
-    content: row.content as string,
+    content,
     category: row.category as Category,
     emoji: row.emoji as string,
+    coverImage: (row.cover_image as string) || firstImageInContent(content) || undefined,
     date: row.date as string,
     createdAt: (row.created_at as Date).toISOString(),
     updatedAt: (row.updated_at as Date).toISOString(),
   };
+}
+
+function makeExcerpt(content: string): string {
+  return (
+    content
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+      .replace(/#{1,6}\s/g, '')
+      .replace(/[*`\-]/g, '')
+      .replace(/\n+/g, ' ')
+      .trim()
+      .slice(0, 120) + '...'
+  );
 }
 
 export async function getPosts(category?: string, q?: string): Promise<Post[]> {
@@ -60,6 +78,7 @@ export async function createPost(data: {
   category: Category;
   content: string;
   emoji: string;
+  coverImage?: string;
 }): Promise<Post> {
   await ensureDB();
 
@@ -70,43 +89,31 @@ export async function createPost(data: {
     month: 'long',
     day: 'numeric',
   });
-  const excerpt =
-    data.content
-      .replace(/#{1,6}\s/g, '')
-      .replace(/[*`\-]/g, '')
-      .replace(/\n+/g, ' ')
-      .trim()
-      .slice(0, 120) + '...';
+  const excerpt = makeExcerpt(data.content);
 
   const result = await pool.query(
-    `INSERT INTO posts (slug, title, excerpt, content, category, emoji, date)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO posts (slug, title, excerpt, content, category, emoji, cover_image, date)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
      RETURNING *`,
-    [slug, data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', date]
+    [slug, data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', data.coverImage || null, date]
   );
   return rowToPost(result.rows[0]);
 }
 
 export async function updatePost(
   slug: string,
-  data: { title: string; category: Category; content: string; emoji: string }
+  data: { title: string; category: Category; content: string; emoji: string; coverImage?: string }
 ): Promise<Post | undefined> {
   await ensureDB();
 
-  const excerpt =
-    data.content
-      .replace(/#{1,6}\s/g, '')
-      .replace(/[*`\-]/g, '')
-      .replace(/\n+/g, ' ')
-      .trim()
-      .slice(0, 120) + '...';
+  const excerpt = makeExcerpt(data.content);
 
   const result = await pool.query(
     `UPDATE posts
-     SET title = $1, excerpt = $2, content = $3, category = $4, emoji = $5
-     WHERE slug = $6
+     SET title = $1, excerpt = $2, content = $3, category = $4, emoji = $5, cover_image = $6
+     WHERE slug = $7
      RETURNING *`,
-    [data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', slug]
+    [data.title.trim(), excerpt, data.content, data.category, data.emoji || '📝', data.coverImage || null, slug]
   );
   return result.rows[0] ? rowToPost(result.rows[0]) : undefined;
 }
