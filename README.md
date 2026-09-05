@@ -59,6 +59,7 @@ APIコールなしでレンダリングされるためSEOに有利で、初期�
 
 ```
 src/
+├── middleware.ts                # IPによるアクセス制御（外部は閲覧のみ）
 ├── app/api/
 │   ├── posts/
 │   │   ├── route.ts             # GET 一覧取得（カテゴリ・検索フィルター）、POST 記事作成
