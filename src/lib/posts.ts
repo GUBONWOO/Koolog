@@ -1,12 +1,10 @@
 import pool, { initDB } from './db';
 import { Post, Category } from '@/types/post';
 
-let dbReady = false;
+let initPromise: Promise<void> | null = null;
 async function ensureDB() {
-  if (!dbReady) {
-    await initDB();
-    dbReady = true;
-  }
+  if (!initPromise) initPromise = initDB();
+  await initPromise;
 }
 
 function firstImageInContent(content: string): string | undefined {

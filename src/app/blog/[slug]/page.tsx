@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { getPostBySlug } from '@/lib/posts';
 import { categoryStyle, categoryJa } from '@/lib/categories';
 import PostActions from './PostActions';
@@ -17,7 +19,6 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const style = categoryStyle[post.category];
-  const lines = post.content.trim().split('\n');
 
   const createdAt = new Date(post.createdAt).toLocaleDateString('ja-JP', {
     year: 'numeric',
@@ -87,65 +88,25 @@ export default async function BlogPostPage({
       </p>
 
       <div className="prose max-w-none">
-        {lines.map((line, i) => {
-          if (line.startsWith('# '))
-            return (
-              <h1 key={i} style={{ fontFamily: 'var(--font-playfair)' }}>
-                {line.slice(2)}
-              </h1>
-            );
-          if (line.startsWith('## '))
-            return (
-              <h2 key={i} style={{ fontFamily: 'var(--font-playfair)' }}>
-                {line.slice(3)}
-              </h2>
-            );
-          if (line.startsWith('### '))
-            return (
-              <h3 key={i} style={{ fontFamily: 'var(--font-playfair)' }}>
-                {line.slice(4)}
-              </h3>
-            );
-          if (line.startsWith('- '))
-            return (
-              <ul key={i}>
-                <li>{line.slice(2)}</li>
-              </ul>
-            );
-          if (line.match(/^\d+\. /))
-            return (
-              <ol key={i}>
-                <li>{line.replace(/^\d+\. /, '')}</li>
-              </ol>
-            );
-          if (line.startsWith('```')) return null;
-          if (line.trim() === '') return <br key={i} />;
-          const mediaMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
-          if (mediaMatch) {
-            const src = mediaMatch[2];
-            const alt = mediaMatch[1] || '';
-            if (/\.(mp4|webm|mov|avi|mkv)$/i.test(src)) {
-              return (
-                <video
-                  key={i}
-                  src={src}
-                  controls
-                  className="max-w-full rounded-2xl my-4"
-                />
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({ children }) => <h1 style={{ fontFamily: 'var(--font-playfair)' }}>{children}</h1>,
+            h2: ({ children }) => <h2 style={{ fontFamily: 'var(--font-playfair)' }}>{children}</h2>,
+            h3: ({ children }) => <h3 style={{ fontFamily: 'var(--font-playfair)' }}>{children}</h3>,
+            img: ({ src, alt }) => {
+              const s = typeof src === 'string' ? src : '';
+              return s && /\.(mp4|webm|mov|avi|mkv)$/i.test(s) ? (
+                <video src={s} controls className="max-w-full rounded-2xl my-4" />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={s || undefined} alt={alt ?? '画像'} className="max-w-full rounded-2xl my-4" />
               );
-            }
-            return (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={src}
-                alt={alt || '画像'}
-                className="max-w-full rounded-2xl my-4"
-              />
-            );
-          }
-          return <p key={i}>{line}</p>;
-        })}
+            },
+          }}
+        >
+          {post.content}
+        </ReactMarkdown>
       </div>
 
       <div className="mt-14 pt-8 border-t border-rose-100 flex justify-center">
