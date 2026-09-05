@@ -82,7 +82,7 @@ export async function createPost(data: {
 
   const slug = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const now = new Date();
-  const date = now.toLocaleDateString('ko-KR', {
+  const date = now.toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

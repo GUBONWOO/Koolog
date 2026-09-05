@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   };
 
   if (!title?.trim() || !category || !content?.trim()) {
-    return NextResponse.json({ error: '필수 항목을 입력해주세요.' }, { status: 400 });
+    return NextResponse.json({ error: '必須項目を入力してください。' }, { status: 400 });
   }
 
   const post = await createPost({ title, category, content, emoji, coverImage });

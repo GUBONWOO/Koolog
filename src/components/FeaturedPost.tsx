@@ -21,7 +21,7 @@ export default function FeaturedPost({ post }: { post: Post }) {
             <div className="relative z-10 p-8 md:p-12 flex flex-col justify-between h-full min-h-72">
               <div className="flex items-center gap-3">
                 <span className="inline-block px-3 py-1 rounded-full bg-white/80 text-rose-600 text-xs font-bold tracking-wide uppercase">
-                  ✨ 추천 글
+                  ✨ おすすめ
                 </span>
                 <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${style.color} bg-white/80`}>
                   {categoryJa[post.category] ?? post.category}
@@ -42,7 +42,7 @@ export default function FeaturedPost({ post }: { post: Post }) {
                 <div className="mt-5 flex items-center gap-4">
                   <span className="text-xs text-white/60">{post.date}</span>
                   <span className="ml-auto text-sm font-bold text-rose-300 group-hover:text-rose-100 transition-colors">
-                    자세히 보기 →
+                    続きを読む →
                   </span>
                 </div>
               </div>
@@ -58,7 +58,7 @@ export default function FeaturedPost({ post }: { post: Post }) {
 
             <div className="flex items-center gap-3 relative z-10">
               <span className="inline-block px-3 py-1 rounded-full bg-white/80 text-rose-600 text-xs font-bold tracking-wide uppercase">
-                ✨ 추천 글
+                ✨ おすすめ
               </span>
               <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${style.color} bg-white/80`}>
                 {categoryJa[post.category] ?? post.category}
@@ -76,7 +76,7 @@ export default function FeaturedPost({ post }: { post: Post }) {
               <div className="mt-5 flex items-center gap-4">
                 <span className="text-xs text-stone-500">{post.date}</span>
                 <span className="ml-auto text-sm font-bold text-rose-500 group-hover:text-rose-700 transition-colors">
-                  자세히 보기 →
+                  続きを読む →
                 </span>
               </div>
             </div>

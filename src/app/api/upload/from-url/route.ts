@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
   const { url } = (await req.json()) as { url: string };
 
   if (!url || typeof url !== 'string') {
-    return NextResponse.json({ error: 'URL이 올바르지 않습니다.' }, { status: 400 });
+    return NextResponse.json({ error: 'URLが正しくありません。' }, { status: 400 });
   }
 
   let parsedUrl: URL;
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     parsedUrl = new URL(url);
     if (!['http:', 'https:'].includes(parsedUrl.protocol)) throw new Error();
   } catch {
-    return NextResponse.json({ error: '유효한 URL을 입력해주세요.' }, { status: 400 });
+    return NextResponse.json({ error: '有効なURLを入力してください。' }, { status: 400 });
   }
 
   let res: Response;
@@ -70,12 +70,12 @@ export async function POST(req: NextRequest) {
     });
   } catch (e) {
     console.error('[from-url] fetch error:', e);
-    return NextResponse.json({ error: '이미지를 가져올 수 없습니다. URL을 확인해주세요.' }, { status: 400 });
+    return NextResponse.json({ error: '画像を取得できません。URLを確認してください。' }, { status: 400 });
   }
 
   if (!res.ok) {
     return NextResponse.json(
-      { error: `가져오기 실패 (HTTP ${res.status}). 이 사이트는 외부 접근을 차단하고 있을 수 있습니다.` },
+      { error: `取得失敗 (HTTP ${res.status})。このサイトは外部アクセスを制限している可能性があります。` },
       { status: 400 }
     );
   }
@@ -86,17 +86,17 @@ export async function POST(req: NextRequest) {
 
   const buffer = Buffer.from(await res.arrayBuffer());
   if (buffer.length === 0) {
-    return NextResponse.json({ error: '빈 응답이 반환됐습니다.' }, { status: 400 });
+    return NextResponse.json({ error: '空のレスポンスが返されました。' }, { status: 400 });
   }
   if (buffer.length > MAX_SIZE) {
-    return NextResponse.json({ error: '파일 크기는 10MB 이하여야 합니다.' }, { status: 400 });
+    return NextResponse.json({ error: 'ファイルサイズは10MB以下にしてください。' }, { status: 400 });
   }
 
   const magicExt = detectImageExt(buffer);
 
   if (!isImageMime && !magicExt && !extFromUrlPath) {
     return NextResponse.json(
-      { error: `이미지 파일이 아닙니다 (${contentType || '알 수 없음'}). 이미지 URL이 맞는지 확인해주세요.` },
+      { error: `画像ファイルではありません (${contentType || '不明'})。画像のURLか確認してください。` },
       { status: 400 }
     );
   }

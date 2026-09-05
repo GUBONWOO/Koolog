@@ -10,20 +10,20 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file') as File | null;
 
   if (!file) {
-    return NextResponse.json({ error: '파일이 없습니다.' }, { status: 400 });
+    return NextResponse.json({ error: 'ファイルがありません。' }, { status: 400 });
   }
 
   const isImage = file.type.startsWith('image/');
   const isVideo = file.type.startsWith('video/');
 
   if (!isImage && !isVideo) {
-    return NextResponse.json({ error: '이미지 또는 동영상 파일만 업로드 가능합니다.' }, { status: 400 });
+    return NextResponse.json({ error: '画像または動画ファイルのみアップロードできます。' }, { status: 400 });
   }
 
   const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
   if (file.size > maxSize) {
     const limit = isVideo ? '200MB' : '10MB';
-    return NextResponse.json({ error: `파일 크기는 ${limit} 이하여야 합니다.` }, { status: 400 });
+    return NextResponse.json({ error: `ファイルサイズは${limit}以下にしてください。` }, { status: 400 });
   }
 
   const ext = (file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg'))

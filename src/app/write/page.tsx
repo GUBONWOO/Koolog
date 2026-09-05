@@ -283,7 +283,7 @@ export default function WritePage() {
                     <button type="button"
                       onClick={() => { setImageMenu(false); imageInputRef.current?.click(); }}
                       className="flex items-center gap-2 w-full px-4 py-2.5 text-xs text-stone-700 hover:bg-stone-50 transition-colors">
-                      📁 파일에서 선택
+                      📁 ファイルから選択
                     </button>
                     <div className="border-t border-stone-100" />
                     <button type="button"

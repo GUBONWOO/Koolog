@@ -7,7 +7,7 @@ type Params = { params: Promise<{ slug: string }> };
 export async function GET(_req: NextRequest, { params }: Params) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  if (!post) return NextResponse.json({ error: '글을 찾을 수 없어요.' }, { status: 404 });
+  if (!post) return NextResponse.json({ error: '記事が見つかりません。' }, { status: 404 });
   return NextResponse.json(post);
 }
 
@@ -23,17 +23,17 @@ export async function PUT(req: NextRequest, { params }: Params) {
   };
 
   if (!title?.trim() || !category || !content?.trim()) {
-    return NextResponse.json({ error: '필수 항목을 입력해주세요.' }, { status: 400 });
+    return NextResponse.json({ error: '必須項目を入力してください。' }, { status: 400 });
   }
 
   const post = await updatePost(slug, { title, category, content, emoji, coverImage });
-  if (!post) return NextResponse.json({ error: '글을 찾을 수 없어요.' }, { status: 404 });
+  if (!post) return NextResponse.json({ error: '記事が見つかりません。' }, { status: 404 });
   return NextResponse.json(post);
 }
 
 export async function DELETE(_req: NextRequest, { params }: Params) {
   const { slug } = await params;
   const ok = await deletePost(slug);
-  if (!ok) return NextResponse.json({ error: '글을 찾을 수 없어요.' }, { status: 404 });
+  if (!ok) return NextResponse.json({ error: '記事が見つかりません。' }, { status: 404 });
   return NextResponse.json({ ok: true });
 }
