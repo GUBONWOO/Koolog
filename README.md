@@ -24,7 +24,7 @@
 - Markdownで記事を作成（GFM対応 — コードブロック・表・リンクなど完全サポート）
 - 画像・動画のアップロード（ファイル選択 / URLから取得 / クリップボード貼り付け / ドラッグ＆ドロップ）
 - YouTube URLからサムネイルを自動でカバー画像に設定
-- カテゴリ別分類（料理・勉強・雑記・秘密フォルダ）
+- カテゴリ別分類（料理・勉強・雑多・秘密フォルダ）
 - 外部からは閲覧のみ許可 — 投稿・編集・削除は内部ネットワーク限定
 
 ---
@@ -34,23 +34,23 @@
 ```
 src/
 ├── app/
-│   ├── page.tsx                 # ホーム（記事一覧・カテゴリフィルター・検索）
+│   ├── page.tsx                 # ホーム（HomeContentをSuspenseでラップ）
 │   ├── blog/[slug]/
-│   │   ├── page.tsx             # 記事詳細（react-markdownでレンダリング）
+│   │   ├── page.tsx             # 記事詳細（サーバーコンポーネント、DBを直接参照）
 │   │   ├── edit/page.tsx        # 記事編集
 │   │   └── PostActions.tsx      # 編集・削除ボタン
 │   ├── write/page.tsx           # 記事作成
 │   └── about/page.tsx           # 自己紹介ページ
 └── components/
-    ├── HomeContent.tsx          # 記事一覧・カテゴリタブ・検索
+    ├── HomeContent.tsx          # 記事一覧・カテゴリタブ・検索（クライアントコンポーネント）
     ├── FeaturedPost.tsx         # 最新記事の大型カード
     ├── PostCard.tsx             # 記事一覧カード
     ├── Navbar.tsx               # ナビゲーション
     └── Footer.tsx               # フッター
 ```
 
-Next.js App Routerを使用し、記事詳細ページはサーバーコンポーネントでDBを直接参照します。
-APIコールなしでレンダリングされるためSEOに有利で、初期表示も高速です。
+記事詳細ページはサーバーコンポーネントでDBを直接参照します。APIコールなしでレンダリングされるため初期表示が高速です。
+ホームページの記事一覧は`HomeContent`（クライアントコンポーネント）が`/api/posts`を呼び出してレンダリングします。
 作成・編集ページはクライアントコンポーネントとし、エディターの状態管理やファイルアップロードのUXを処理しています。
 
 ---
@@ -66,11 +66,14 @@ src/
 │   │   └── [slug]/route.ts      # GET 単件取得、PUT 編集、DELETE 削除
 │   ├── upload/
 │   │   ├── route.ts             # ファイルアップロード（画像10MB / 動画200MB）
-│   │   └── from-url/route.ts    # URLから画像取得
-│   └── secret-verify/route.ts   # 削除前のPIN確認
+│   │   └── from-url/route.ts    # URLから画像取得（magic bytesで画像ファイルを検証）
+│   ├── uploads/[...path]/
+│   │   └── route.ts             # アップロード済みファイルの配信（パストラバーサル対策済み）
+│   └── secret-verify/route.ts   # 秘密フォルダのPIN確認
 └── lib/
     ├── db.ts                    # PostgreSQL接続・テーブル初期化
-    └── posts.ts                 # DB CRUD
+    ├── posts.ts                 # DB CRUD
+    └── categories.ts            # カテゴリ定義・日韓マッピング
 ```
 
 画像の挿入はファイルアップロード・URL取得・クリップボード貼り付け・ドラッグ＆ドロップの4種類に対応しています。
