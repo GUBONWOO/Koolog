@@ -43,13 +43,12 @@ src/
 │   └── about/page.tsx           # 自己紹介ページ
 └── components/
     ├── HomeContent.tsx          # 記事一覧・カテゴリタブ・検索（クライアントコンポーネント）
-    ├── FeaturedPost.tsx         # 最新記事の大型カード
     ├── PostCard.tsx             # 記事一覧カード
     ├── Navbar.tsx               # ナビゲーション
     └── Footer.tsx               # フッター
 ```
 
-記事詳細ページはサーバーコンポーネントでDBを直接参照します。APIコールなしでレンダリングされるため初期表示が高速です。
+記事詳細ページはサーバーコンポーネントでDBを直接参照し、`generateMetadata`でタイトル・OGタグを動的生成します。APIコールなしでレンダリングされるためSEOに有利で、初期表示も高速です。
 ホームページの記事一覧は`HomeContent`（クライアントコンポーネント）が`/api/posts`を呼び出してレンダリングします。
 作成・編集ページはクライアントコンポーネントとし、エディターの状態管理やファイルアップロードのUXを処理しています。
 
@@ -60,20 +59,21 @@ src/
 ```
 src/
 ├── middleware.ts                # IPによるアクセス制御（外部は閲覧のみ）
-├── app/api/
-│   ├── posts/
-│   │   ├── route.ts             # GET 一覧取得（カテゴリ・検索フィルター）、POST 記事作成
-│   │   └── [slug]/route.ts      # GET 単件取得、PUT 編集、DELETE 削除
-│   ├── upload/
-│   │   ├── route.ts             # ファイルアップロード（画像10MB / 動画200MB）
-│   │   └── from-url/route.ts    # URLから画像取得（magic bytesで画像ファイルを検証）
-│   ├── uploads/[...path]/
-│   │   └── route.ts             # アップロード済みファイルの配信（パストラバーサル対策済み）
-│   └── secret-verify/route.ts   # 秘密フォルダのPIN確認
-└── lib/
-    ├── db.ts                    # PostgreSQL接続・テーブル初期化
-    ├── posts.ts                 # DB CRUD
-    └── categories.ts            # カテゴリ定義・日韓マッピング
+├── app/
+│   ├── api/
+│   │   ├── posts/
+│   │   │   ├── route.ts         # GET 一覧取得（カテゴリ・検索フィルター）、POST 記事作成
+│   │   │   └── [slug]/route.ts  # GET 単件取得、PUT 編集、DELETE 削除
+│   │   ├── upload/
+│   │   │   ├── route.ts         # ファイルアップロード（画像10MB / 動画200MB）
+│   │   │   └── from-url/route.ts # URLから画像取得（magic bytesで画像ファイルを検証）
+│   │   └── secret-verify/route.ts # 秘密フォルダのPIN確認
+│   └── uploads/[...path]/route.ts # アップロード済みファイル配信（パストラバーサル対策済み）
+├── lib/
+│   ├── db.ts                    # PostgreSQL接続・テーブル初期化
+│   ├── posts.ts                 # DB CRUD
+│   └── categories.ts            # カテゴリ定義・日韓マッピング
+└── types/post.ts                # Post型定義
 ```
 
 画像の挿入はファイルアップロード・URL取得・クリップボード貼り付け・ドラッグ＆ドロップの4種類に対応しています。
