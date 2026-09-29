@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -7,6 +8,27 @@ import { categoryStyle, categoryJa } from '@/lib/categories';
 import PostActions from './PostActions';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) return { title: '記事が見つかりません' };
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      ...(post.coverImage ? { images: [post.coverImage] } : {}),
+    },
+  };
+}
 
 export default async function BlogPostPage({
   params,

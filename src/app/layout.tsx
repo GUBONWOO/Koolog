@@ -17,8 +17,11 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "koolog — 개발 기록",
-  description: "프론트엔드 개발자가 배우고 경험한 것들을 기록하는 블로그",
+  title: {
+    default: "koolog — 日々の記録",
+    template: "%s | koolog",
+  },
+  description: "料理・勉強・日常のあれこれを綴る個人ブログ。",
 };
 
 export default function RootLayout({
@@ -27,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={`${nunito.variable} ${playfair.variable}`}>
+    <html lang="ja" className={`${nunito.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
